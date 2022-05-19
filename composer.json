@@ -1,0 +1,19 @@
+{
+    "name": "dalibor/uefa-league",
+    "require": {
+        "fzaninotto/faker": "^1.9",
+        "symfony/console": "^5.4",
+        "symfony/monolog-bundle": "^3.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Uefa\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "hpEliteDesk",
+            "email": "dalibor.gc@gmail.com"
+        }
+    ]
+}
