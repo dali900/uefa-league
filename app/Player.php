@@ -7,4 +7,8 @@ class Player
 	public $position;
 	public $quality;
 	public $speed;
+
+	public function __construct(Type $var = null) {
+		$this->var = $var;
+	}
 }
