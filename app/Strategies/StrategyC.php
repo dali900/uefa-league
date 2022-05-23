@@ -10,15 +10,23 @@ class StrategyC implements GameStrategyInterface
     public function makeFormation(Team $team)
     {
         //get 1 goalkeeper - quality
-        $allGoalkeepers = $team->getAllGoalkeepers();
+        $allGoalkeepers = $team->getAllHealthyGoalkeepers();
+		//If no healthy player for this position get from other.
+		if(count($allGoalkeepers) < 2){
+			$allGoalkeepers = $team->getAllHealthyPlayers();
+		}
         usort($allGoalkeepers, function($a, $b) {
             return $b['quality'] <=> $a['quality'];
         });
         $activeGoalkeeper = array_slice($allGoalkeepers, 0, 1);
-        $activeGoalkeeperNumber = array_column($activeGoalkeeper, 'number');
+        $activeGoalkeeperNumber = array_column($activeGoalkeeper, 'number')[0];
 
         //get 5 defenders - quality
-        $allDefenders = $team->getAllDefenders();
+        $allDefenders = $team->getAllHealthyDefenders();
+		//If no healthy player for this position get from other.
+		if(count($allDefenders) < 3){
+			$allDefenders = $team->getAllHealthyPlayers();
+		}
         usort($allDefenders, function($a, $b) {
             return $b['quality'] <=> $a['quality'];
         });
@@ -26,7 +34,11 @@ class StrategyC implements GameStrategyInterface
         $activeDenfenderNumbers = array_column($activeDefenders, 'number');
 
         //get 4 midfielders - quality
-        $allMidfielders = $team->getAllMidfielders();
+        $allMidfielders = $team->getAllHealthyMidfielders();
+		//If no healthy player for this position get from other.
+		if(count($allMidfielders) < 3){
+			$allMidfielders = $team->getAllHealthyPlayers();
+		}
         usort($allMidfielders, function($a, $b) {
             return $b['quality'] <=> $a['quality'];
         });
@@ -34,7 +46,11 @@ class StrategyC implements GameStrategyInterface
         $activeMidfielderNumbers = array_column($activeMidfielders, 'number');
 
         //get 1 striker - quality
-        $allStrikers = $team->getAllStrikers();
+        $allStrikers = $team->getAllHealthyStrikers();
+		//If no healthy player for this position get from other.
+		if(count($allStrikers) < 3){
+			$allStrikers = $team->getAllHealthyPlayers();
+		}
         usort($allStrikers, function($a, $b) {
             return $b['quality'] <=> $a['quality'];
         });

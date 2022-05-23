@@ -12,35 +12,6 @@ class Team
 	 * @var int
 	 */
 	private $players;
-
-	//Players on the filed
-	/**
-	 * Goalkeeper on the filed
-	 *
-	 * @var int
-	 */
-	private $activeGoalkeeper;
-
-	/**
-	 * Defenders on the filed
-	 *
-	 * @var int
-	 */
-	private $activeDefenders;
-
-	/**
-	 * Midfielders on the filed
-	 *
-	 * @var int
-	 */
-	private $activeDidfielders;
-
-	/**
-	 * Strikers on the filed
-	 *
-	 * @var int
-	 */
-	private $activeStrikers;
 	
 	/**
 	 * Team formation based on selected players on the field 
@@ -62,65 +33,139 @@ class Team
 		$this->players = $players;
 	}
 
+	/**
+	 * Seter. Team strategy.
+	 *
+	 * @param GameStrategyInterface $strategy
+	 * @return void
+	 */
 	public function setStrategy(GameStrategyInterface $strategy)
 	{
 		$this->strategy = $strategy;
 	}
 
+	/**
+	 * Set team players
+	 *
+	 * @param array $players
+	 * @return void
+	 */
 	public function setPlayers($players)
 	{
 		$this->players = $players;
 	}
 
+	/**
+	 * Get all team Playerss
+	 *
+	 * @return array
+	 */
 	public function getPlayers()
 	{
 		return $this->players;
 	}
 
-	//Goalkeeper
-	public function getAllGoalkeepers()
+	/**
+	 * getAllHealthyPlayers
+	 *
+	 * @return array
+	 */
+	public function getAllHealthyPlayers()
 	{
 		return array_filter($this->getPlayers(), function ($player) {
-			return $player['position'] == 'goalkeeper';
+			return $player['injured'] == 0;
 		});
 	}
 
-	public function getActiveGoalkeeper()
+	/**
+	 * Players on the field
+	 *
+	 * @return array
+	 */
+	public function getActivePlayers()
 	{
-		return $this->activeGoalkeeper;
+		return array_filter($this->getPlayers(), function ($player) {
+			return $player['active'] == 1;
+		});
 	}
 
-	public function setActiveGoalkeeper($activeGoalkeepers)
+	//Goalkeeper
+	/**
+	 * Getter. Healthy goalkeepers
+	 *
+	 * @return array
+	 */
+	public function getAllHealthyGoalkeepers()
 	{
-		$this->activeGoalkeeper = $activeGoalkeepers;
+		return array_filter($this->getPlayers(), function ($player) {
+			return $player['position'] == 'goalkeeper' && $player['injured'] == 0;
+		});
+	}
+
+	/**
+	 * Getter. Goalkeeper on the field
+	 *
+	 * @return array
+	 */
+	public function getActiveGoalkeeper()
+	{
+		$array = array_filter($this->getPlayers(), function ($player) {
+			return $player['position'] == 'goalkeeper' && $player['active'] == 1;
+		});
+		return array_shift($array);
+	}
+
+	/**
+	 * Setter. Sets goalkeeper who plays.
+	 *
+	 * @param int $activeGoalkeepers
+	 * @return void
+	 */
+	public function setActiveGoalkeeper($activeGoalkeeper)
+	{
 		foreach ($this->players as $key => $player) {
 			if($player['position'] == 'goalkeeper'){
 				$this->players[$key]['active'] = 0;
-				foreach ($activeGoalkeepers as $activeGoalkeeper) {
-					if($activeGoalkeeper == $player['number']){
-						$this->players[$key]['active'] = 1;
-					}
+				if($activeGoalkeeper == $player['number']){
+					$this->players[$key]['active'] = 1;
 				}
 			}
 		}
 	}
 
 	//Defenders
-	public function getAllDefenders()
+	/**
+	 * Getter. Healthy defenders
+	 *
+	 * @return array
+	 */
+	public function getAllHealthyDefenders()
 	{
 		return array_filter($this->getPlayers(), function ($player) {
-			return $player['position'] == 'defender';
+			return $player['position'] == 'defender' && $player['injured'] == 0;
 		});
 	}
 
+	/**
+	 * Getter. Defenders on the field
+	 *
+	 * @return array
+	 */
 	public function getActiveDefenders()
 	{
-		return $this->activeDefenders;
+		return array_filter($this->getPlayers(), function ($player) {
+			return $player['position'] == 'defender' && $player['active'] == 1;
+		});
 	}
 
+	/**
+	 * Setter. Sets Defenders who plays.
+	 *
+	 * @param array $activeDefenders
+	 * @return void
+	 */
 	public function setActiveDenfenders($activeDefenders)
 	{
-		$this->activeDefenders = $activeDefenders;
 		foreach ($this->players as $key => $player) {
 			if($player['position'] == 'defender'){
 				$this->players[$key]['active'] = 0;
@@ -134,21 +179,38 @@ class Team
 	}
 	
 	//Midfielders
-	public function getAllMidfielders()
+	/**
+	 * Getter. Healthy defenders
+	 *
+	 * @return array
+	 */
+	public function getAllHealthyMidfielders()
 	{
 		return array_filter($this->getPlayers(), function ($player) {
-			return $player['position'] == 'midfielder';
+			return $player['position'] == 'midfielder' && $player['injured'] == 0;
 		});
 	}
 
+	/**
+	 * Getter. Midfielders on the field
+	 *
+	 * @return array
+	 */
 	public function getActiveMidfielders()
 	{
-		return $this->activeMidfielders;
+		return array_filter($this->getPlayers(), function ($player) {
+			return $player['position'] == 'midfielder' && $player['active'] == 1;
+		});
 	}
 
+	/**
+	 * Setter. Sets Midfielders who plays.
+	 *
+	 * @param array $activeMidfielders
+	 * @return void
+	 */
 	public function setActiveMidfielders($activeMidfielders)
 	{
-		$this->activeMidfielders = $activeMidfielders;
 		foreach ($this->players as $key => $player) {
 			if($player['position'] == 'midfielder'){
 				$this->players[$key]['active'] = 0;
@@ -162,21 +224,38 @@ class Team
 	}
 
 	//Strikers
-	public function getAllStrikers()
+	/**
+	 * Getter. Healthy Strikers
+	 *
+	 * @return array
+	 */
+	public function getAllHealthyStrikers()
 	{
 		return array_filter($this->getPlayers(), function ($player) {
-			return $player['position'] == 'striker';
+			return $player['position'] == 'striker' && $player['injured'] == 0;
 		});
 	}
 
+	/**
+	 * Getter. Strikers on the field
+	 *
+	 * @return array
+	 */
 	public function getActiveStrikers()
 	{
-		return $this->activeStrikers;
+		return array_filter($this->getPlayers(), function ($player) {
+			return $player['position'] == 'striker' && $player['active'] == 1;
+		});
 	}
 
+	/**
+	 * Setter. Sets Strikers who plays.
+	 *
+	 * @param array $activeStrikers
+	 * @return void
+	 */
 	public function setActiveStrikers($activeStrikers)
 	{
-		$this->activeStrikers = $activeStrikers;
 		foreach ($this->players as $key => $player) {
 			if($player['position'] == 'striker'){
 				$this->players[$key]['active'] = 0;
@@ -189,16 +268,42 @@ class Team
 		}
 	}
 
+	/**
+	 * Setter. Injured player.
+	 *
+	 * @param int $playerNumber
+	 * @return void
+	 */
+	public function setInjuredPlayer($playerNumber)
+	{
+		foreach ($this->getPlayers() as $key => $player) {
+			if($player['number'] == $playerNumber){
+				$this->players[$key]['injured'] = 1;
+			}
+		}
+	}
+
+	/**
+	 * Get team formation.
+	 *
+	 * @return string
+	 */
 	public function getFormation()
 	{
 		return $this->formation;
 	}
 
+	/**
+	 * Call team strategy
+	 *
+	 * @return void
+	 */
 	public function formatTeam()
 	{
 		$this->strategy->makeFormation($this);
 	}
 
+	/** only for formation */
 	public function setFormation($activeGoalkeeper, $activeDefenders, $activeMidfielders, $activeStrikers)
 	{
 		$this->setActiveGoalkeeper($activeGoalkeeper);
